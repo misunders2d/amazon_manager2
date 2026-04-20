@@ -1,0 +1,41 @@
+{
+  "name": "ori2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node scripts/postinstall-prewarm.cjs",
+    "prewarm": "node scripts/postinstall-prewarm.cjs",
+    "test": "node --import tsx --test --test-reporter=spec $(find src -type f -name '*.test.ts')",
+    "prestart": "node scripts/check-node.cjs",
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@a2a-js/sdk": "^0.3.13",
+    "@mariozechner/pi-coding-agent": "^0.67.3",
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.9.0",
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "fastembed": "^2.1.0",
+    "node-schedule": "^2.1.1",
+    "otplib": "^12.0.1",
+    "pdf-parse": "^2.4.5",
+    "sqlite-vec": "^0.1.9"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "@types/node-schedule": "^2.1.8",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}

@@ -1,0 +1,53 @@
+# ori2 CI — runs on push + PR to master.
+#
+# This is the upstream guard for the multi-VPS divergent-fork model: every
+# department's bot is built from this baseline, so a regression here ripples
+# to N forks. Don't merge red.
+#
+# Matrix: Node 22, 24. Node 22 is the current LTS (since Oct 2024). We
+# previously included Node 20 but its test-runner glob support varies across
+# minor versions and bit us — bumping the floor avoids a class of brittleness.
+#
+# Security note: this workflow takes no untrusted input from PR/issue bodies
+# or commit messages, so the standard injection vectors don't apply. If you
+# add a step that does (e.g. echoing a PR title), bind it through env: and
+# quote — see https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/
+
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22", "24"]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-fund --no-audit
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test
